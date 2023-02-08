@@ -11,14 +11,16 @@ interface NavbarProps {}
 
 const Navbar: FC<NavbarProps> = ({}) => {
   return (
-    <nav className='flex justify-between w-full px-8 py-4'>
+    <nav className='flex justify-between px-8 py-4 text-headline mx-auto max-w-6xl'>
       <Link href='/'>
-        <h1>ChatApp</h1>
+        <h1 className=' hover:text-button text-2xl'>ChatApp</h1>
       </Link>
       <div className='flex gap-4'>
         {navLinks.map((link) => (
           <Link href={link.href} key={link.title}>
-            <p>{link.title}</p>
+            <p className='text-paragraph hover:text-button text-lg'>
+              {link.title}
+            </p>
           </Link>
         ))}
       </div>

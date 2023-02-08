@@ -6,21 +6,17 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundColor: {
-        background: "#232946",
-      },
-      textColor: {
-        headline: "#fffffe",
-        paragraph: "#b8c1ec",
-        buttonText: "#232946",
-        illustrationStroke: "#121629",
-        main: "#b8c1ec",
-        highlight: "#eebbc3",
-        secondary: "#fffffe",
-        tertiary: "#eebbc3",
-      },
-      backgroundColor: {
-        button: "#eebbc3",
+      colors: {
+        background: "#fef6e4",
+        headline: "#001858",
+        paragraph: "#172c66",
+        buttonText: "#001858",
+        button: "#f582ae",
+        stroke: "#001858",
+        main: "#f3d2c1",
+        highlight: "#fef6e4",
+        secondary: "#8bd3dd",
+        tertiary: "#f582ae",
       },
     },
   },
