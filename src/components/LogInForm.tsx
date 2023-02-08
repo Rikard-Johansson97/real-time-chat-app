@@ -1,83 +1,114 @@
+"use client"; // this is a client component
+import useAuthUser from "@/hooks/useAuthUser";
+import { UserData } from "@/types/createUser";
 /* eslint-disable @next/next/no-img-element */
-import React, { FC } from "react";
+import Link from "next/link";
+import { ClientResponseError } from "pocketbase";
+import React, { FC, useState } from "react";
+import { useSessionStorage } from "usehooks-ts";
+import isEmail from "validator/lib/isEmail";
 
 interface LogInFormProps {}
 
 const LogInForm: FC<LogInFormProps> = ({}) => {
+  const [token, setToken] = useSessionStorage("token", "");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userData, setUserData] = useState<any>({});
+  const [isEmailValid, setIsEmailValid] = useState(true);
+
+  const [authData, error] = useAuthUser(userData.email, userData.password);
+
+  const handleSubmit = () => {
+    if (isEmail(email)) {
+      setUserData({ email: email, password: password });
+      setIsEmailValid(true);
+      setToken(authData?.token);
+      console.log(authData);
+      console.log(error);
+    } else {
+      return setIsEmailValid(false);
+    }
+  };
+
   return (
-    <section className='h-screen'>
-      <div className='px-6 h-full text-gray-800'>
-        <div className='flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6'>
-          <div className='grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0'>
-            <img
-              src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp'
-              className='w-full'
-              alt='Sample image'
-            />
-          </div>
-          <div className='xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0'>
-            <form>
-              <div className='flex flex-row items-center justify-center lg:justify-start'>
-                <p className='text-lg mb-0 mr-4'>Sign in with</p>
-              </div>
-              <div className='flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5'>
-                <p className='text-center font-semibold mx-4 mb-0'>Or</p>
-              </div>
-              {/* Email input */}
-              <div className='mb-6'>
+    <div className='container mx-auto '>
+      <div className='flex justify-center px-6 my-12 '>
+        {/* Row */}
+        <div className='w-full xl:w-3/4 lg:w-11/12 flex shadow-xl'>
+          {/* Col */}
+          <div
+            className='w-full h-auto hidden lg:block lg:w-5/12 bg-cover rounded-l-lg'
+            style={{
+              backgroundImage:
+                "url(https://www.color-hex.com/palettes/92194.png)",
+            }}
+          />
+          {/* Col */}
+          <div className='w-full lg:w-7/12 bg-background p-5 rounded-lg lg:rounded-l-none'>
+            <h3 className='pb-4 text-2xl text-center'>Log In</h3>
+            <form className='px-8 pt-6 pb-8 mb-4 bg-background rounded'>
+              <div className='mb-4'>
+                <label
+                  className='block mb-2 text-sm font-bold text-headline'
+                  htmlFor='email'>
+                  Email
+                </label>
                 <input
-                  type='text'
-                  className='form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'
-                  id='exampleFormControlInput2'
-                  placeholder='Email address'
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`w-full px-3 py-2 mb-3 text-sm leading-tight text-headline border rounded shadow appearance-none focus:outline-none focus:shadow-outline ${
+                    isEmailValid ? "" : "border-tertiary"
+                  }`}
+                  id='email'
+                  type='email'
+                  placeholder='Email'
                 />
+                {!isEmailValid && (
+                  <p className='text-xs italic text-tertiary'>invalid email</p>
+                )}
               </div>
-              {/* Password input */}
-              <div className='mb-6'>
-                <input
-                  type='password'
-                  className='form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'
-                  id='exampleFormControlInput2'
-                  placeholder='Password'
-                />
-              </div>
-              <div className='flex justify-between items-center mb-6'>
-                <div className='form-group form-check'>
-                  <input
-                    type='checkbox'
-                    className='form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
-                    id='exampleCheck2'
-                  />
+              <div className='mb-4 md:flex md:justify-between'>
+                <div className='mb-4 md:mr-2 md:mb-0 flex-1'>
                   <label
-                    className='form-check-label inline-block text-gray-800'
-                    htmlFor='exampleCheck2'>
-                    Remember me
+                    className='block mb-2 text-sm font-bold text-headline'
+                    htmlFor='password'>
+                    Password
                   </label>
+                  <input
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={
+                      "w-full px-3 py-2 mb-3 text-sm leading-tight text-headline border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    }
+                    id='password'
+                    type='password'
+                    placeholder='******************'
+                  />
                 </div>
-                <a href='#!' className='text-gray-800'>
-                  Forgot password?
-                </a>
               </div>
-              <div className='text-center lg:text-left'>
+              <div className='mb-6 text-center'>
                 <button
-                  type='button'
-                  className='inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out'>
-                  Login
+                  onClick={() => handleSubmit()}
+                  className='w-full px-4 py-2 font-bold text-tertiary bg-secondary rounded-full hover:bg-main focus:outline-none focus:shadow-outline duration-200'
+                  type='button'>
+                  Log In
                 </button>
-                <p className='text-sm font-semibold mt-2 pt-1 mb-0'>
-                  {"don't have an account?"}
-                  <a
-                    href='#!'
-                    className='text-red-600 hover:text-red-700 focus:text-red-700 transition duration-200 ease-in-out'>
-                    Register
-                  </a>
-                </p>
+              </div>
+              <p className='text-xs italic text-tertiary w-full text-center pb-4'>
+                Wrong Email or password
+              </p>
+              <hr className='mb-6 border-t' />
+              <div className='text-center'>
+                <Link
+                  className='inline-block text-sm text-paragraph align-baseline hover:text-tertiary duration-200'
+                  href='/register'>
+                  Don&apos;t Have an Account? Register Here!
+                </Link>
               </div>
             </form>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
