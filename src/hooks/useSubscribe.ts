@@ -1,12 +1,12 @@
-import { UserData } from "@/types/createUser";
+import { UserData, UserResponse } from "@/types/UserTypes";
 import PocketBase, { ClientResponseError } from "pocketbase";
 import { useEffect, useState } from "react";
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 
 const useAuthUser = (email: string, password: string) => {
-  const [response, setResponse] = useState<UserData | null>(
-    null
+  const [response, setResponse] = useState<UserResponse | []>(
+    []
   );
   const [error, setError] = useState<ClientResponseError | null>(null);
 
@@ -17,7 +17,7 @@ const useAuthUser = (email: string, password: string) => {
           .collection("users")
           .authWithPassword(email, password);
         await pb.collection("users").requestVerification(email);
-        setResponse(response);
+        setResponse(response as any);
       } catch (err) {
         setError(err as ClientResponseError);
       }

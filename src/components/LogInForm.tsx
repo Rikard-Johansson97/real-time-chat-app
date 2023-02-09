@@ -1,35 +1,43 @@
+/* eslint-disable @next/next/no-img-element */
+
 "use client"; // this is a client component
 import useAuthUser from "@/hooks/useAuthUser";
-import { UserData } from "@/types/createUser";
-/* eslint-disable @next/next/no-img-element */
+import { UserResponse } from "@/types/UserTypes";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ClientResponseError } from "pocketbase";
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useSessionStorage } from "usehooks-ts";
 import isEmail from "validator/lib/isEmail";
 
 interface LogInFormProps {}
 
 const LogInForm: FC<LogInFormProps> = ({}) => {
-  const [token, setToken] = useSessionStorage("token", "");
+  const router = useRouter();
+  const [token, setToken] = useSessionStorage("token", null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState<any>({});
   const [isEmailValid, setIsEmailValid] = useState(true);
 
-  const [authData, error] = useAuthUser(userData.email, userData.password);
+  const [response, error] = useAuthUser(userData.email, userData.password);
 
-  const handleSubmit = () => {
-    if (isEmail(email)) {
-      setUserData({ email: email, password: password });
-      setIsEmailValid(true);
-      setToken(authData?.token);
-      console.log(authData);
-      console.log(error);
-    } else {
-      return setIsEmailValid(false);
+  const handleSubmit = async () => {
+    if (!isEmail(email)) {
+      setIsEmailValid(false);
+      return;
     }
+
+    setUserData({ email: email, password: password });
+    setIsEmailValid(true);
   };
+
+  useEffect(() => {
+    if (response?.token) {
+      setToken(response.token);
+      router.push("/", "123");
+    }
+  }, [response]);
 
   return (
     <div className='container mx-auto '>
@@ -93,9 +101,11 @@ const LogInForm: FC<LogInFormProps> = ({}) => {
                   Log In
                 </button>
               </div>
-              <p className='text-xs italic text-tertiary w-full text-center pb-4'>
-                Wrong Email or password
-              </p>
+              {error && (
+                <p className='text-xs italic text-tertiary w-full text-center pb-4'>
+                  Wrong Email or password
+                </p>
+              )}
               <hr className='mb-6 border-t' />
               <div className='text-center'>
                 <Link
