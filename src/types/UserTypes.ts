@@ -25,3 +25,25 @@ export interface UserData {
     token: string
   }
   
+
+  export interface UserList {
+    page: number
+    perPage: number
+    totalItems: number
+    totalPages: number
+    items: Array<{
+      avatar: string
+      collectionId: string
+      collectionName: string
+      created: string
+      email: string
+      emailVisibility: boolean
+      id: string
+      name: string
+      updated: string
+      username: string
+      verified: boolean
+      expand: {}
+    }>
+  }
+  
