@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
+import Chat from "./Chat";
 import UserList from "./UserList";
 
 interface DashboardProps {}
@@ -9,8 +10,9 @@ const Dashboard: FC<DashboardProps> = ({}) => {
 
   console.log(router);
   return (
-    <div>
+    <div className='flex'>
       <UserList />
+      <Chat />
     </div>
   );
 };

@@ -10,7 +10,7 @@ const UserList: FC<userListProps> = ({}) => {
   const users = response?.items;
   console.log(users);
   return (
-    <div className='sm:block hidden max-w-xs bg-background h-screen w-full overflow-y-scroll cursor-pointer'>
+    <div className='flex-1 sm:block hidden max-w-xs bg-background h-screen w-full overflow-y-scroll cursor-pointer'>
       {/* User */}
       <div className='flex gap-4 items-center p-2'>
         <img
