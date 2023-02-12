@@ -1,5 +1,6 @@
 "use client"; // this is a client component
 import useCreateUser from "@/hooks/useCreateUser";
+import { UserData } from "@/types/UserTypes";
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React, { FC, useState, useEffect } from "react";
@@ -16,7 +17,7 @@ const RegisterForm: FC<RegisterFormProps> = ({}) => {
   const [avatar, setAvatar] = useState("");
   const [userData, setUserData] = useState({});
 
-  const pb = useCreateUser(userData);
+  const pb = useCreateUser(userData as UserData);
 
   const handleClick = () => {
     setUserData({
